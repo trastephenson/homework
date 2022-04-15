@@ -3,41 +3,26 @@ defmodule HomeworkTest do
   use Hound.Helpers
   use ExUnit.Case
 
-  import Helpers
-  import Keymaster
+  alias Help
+  alias Keymaster
+  alias Img_search
+  
 
   hound_session()
 
-  
   test "key presses" do
     navigate_to("https://the-internet.herokuapp.com/key_presses")
- 
-    Keymaster.tap_key   #runs from keymaster module  
-  
+    Keymaster.compare_key_to_result   #generates random keystroke and inputs it with an assert to compare it with result output.   
   end
-
-
-
 
 
   test "Notice Msg" do
     navigate_to("https://the-internet.herokuapp.com/notification_message_rendered")
     Process.sleep(1000)   #page load wait
-    Helpers.msg_gen   #generates 1st notice msg
-    element = find_element(:id, "flash")
-    original_msg = visible_text(element)    #need to capture 1st msg to use it as comparison to stop loop
-    
-    if Helpers.msg_gen != original_msg do   #loop until messages repeat
-       Helpers.msg_gen
-    else 
-      IO.puts "Stop once messages repeat!"
-    end
+    Help.notice_msg_get
+    assert element_displayed?({:id, "flash"}), "The notice message is not displaying properly. Test Failed"
   end
 
-
-
-
-  
   test "entry ad" do
     navigate_to ("https://the-internet.herokuapp.com/entry_ad") 
     Process.sleep(500)    #letting page load 
@@ -49,7 +34,6 @@ defmodule HomeworkTest do
     :timer.sleep(500)
     
     if assert element_displayed?(ad) == false do    #assert that ad has closed 
-      IO.puts("Test Successful")
     
     else   
       Process.sleep(500)    #wait a bit more
@@ -57,37 +41,12 @@ defmodule HomeworkTest do
     end
   end   
 
-
-
-
-  test "broken images" do
+  test "image_links_working" do
     navigate_to ("https://the-internet.herokuapp.com/broken_images")
-    Process.sleep(1000)   #gives page time to load
-    elements = find_all_elements(:tag, "img")   #gets all img uuid's on page
+    Img_search.find_broken_img_url # Finds all img links, asserts broken_url string is empty, failure lists broken URL's for fixing.
+  end
 
-    img_url_links = Enum.map(elements, fn x ->    #converts uuid's string into img source links
-      link = attribute_value(x,"currentSrc")
-      end)
-
-    broken_img_urls = Enum.filter(img_url_links, fn url ->     
-      Process.sleep(500)
-      navigate_to(url)        #navigates to all img url's
-      Process.sleep(500)
-      String.contains?(visible_page_text(), "Not Found")    #filters all url's that have "not found" into string    
-      end) 
-
-    assert Enum.empty?(broken_img_urls), 
-    "expected result is empty [] all links working, but if broken img(s) present the links are: #{broken_img_urls} #{take_screenshot()}"   #empty string = working links
-        
-    IO.puts("All Images are working!")
-    
-    end 
-
-  
-  
-  
-  
-  test "broken images2" do
+  test "image_links_working_alt" do
     navigate_to ("https://the-internet.herokuapp.com/broken_images")
       Process.sleep(1000)   #gives page time to load
       elements = find_all_elements(:tag, "img")   #gets all img uuid's on page
@@ -107,13 +66,11 @@ defmodule HomeworkTest do
       img_compare = Enum.filter(img_links, fn x ->    #used the same function to see if any of the img_links were contained in the broken_img, returned (2 broken links) 
       String.contains?(x, broken_img)
       end)    
-    
+
       refute broken_img === img_compare, 
       "expected result is false all links working, but if broken img(s) present the links are: #{broken_img} #{take_screenshot()}"   #a match would mean there are broken links present
      
     if broken_img != img_compare do
-      IO.puts("All Images are working!")
-    
     end
   end
 end
