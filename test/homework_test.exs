@@ -7,7 +7,6 @@ defmodule HomeworkTest do
   alias Keymaster
   alias Img_search
   
-
   hound_session()
 
   test "key presses" do
@@ -38,12 +37,12 @@ defmodule HomeworkTest do
     end
   end   
 
-  test "image_links_working" do
+  test "image_links_working" do # Test designed to fail if images are broken so they can be fixed
     navigate_to ("https://the-internet.herokuapp.com/broken_images")
     Img_search.find_broken_img_url # Finds all img links, asserts broken_url string is empty, failure lists broken URL's for fixing.
   end
 
-  test "error_log_check for img links" do
+  test "error_log_check for img links" do # Test designed to fail if images are broken so they can be fixed
     navigate_to ("https://the-internet.herokuapp.com/broken_images")
     Img_search.error_log_img_check  #Checks error log for img file extentions, if present the test will fail giving the Img url's found in the log which are not working. 
   end
