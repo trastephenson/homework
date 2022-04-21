@@ -1,6 +1,5 @@
 defmodule Keymaster do
   use Hound.Helpers
-  
   import ExUnit.Assertions
 
   @alphabet Enum.concat([?0..?9,?A..?Z])   #range of keys chosen
@@ -21,7 +20,7 @@ defmodule Keymaster do
     send_text(key)
     element = find_element(:id, "result")
     result = visible_text(element)
-    assert result == "You entered: #{key}", "You entered: #{key}, but result was #{result}, It did not match. Test failed."    #put assert in module so it would assert every iteration of the loop. 
+    assert result == "You entered: #{key}", "You entered: #{key}, but result was #{result}, It did not match. Test failed."    #assert that key value matches key pressed in the dialoge string. 
     Process.sleep(100)
     if retry_count > 0 do 
       retry_count = retry_count - 1
