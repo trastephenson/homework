@@ -13,7 +13,12 @@ defmodule Img_search do
                Process.sleep(500)
                String.contains?(visible_page_text(), "Not Found")    #filters all url's that have "not found" into string    
                end)
-        assert Enum.empty?(broken_url),"This test fails if any img links are broken!:\n The number of broken URL's is: #{Enum.count(broken_url)}\n Img URL's that need to be fixed: \n #{broken_url} \n screenshot has been saved to: \n #{take_screenshot()}"   #empty string = working links       
+        assert Enum.empty?(broken_url),"This test fails if any img links are found broken!:
+                                       \n The number of broken URL's is: #{Enum.count(broken_url)}
+                                       \n Img URL's that need to be fixed: 
+                                       \n #{broken_url} 
+                                       \n screenshot has been saved to: 
+                                       \n #{take_screenshot()}"   #empty string = working links otherwise test fails and gives you list of all broken links to fix.       
     end
 
 
@@ -37,6 +42,10 @@ defmodule Img_search do
          |> Enum.filter( fn x ->    
             String.contains?(x, @img_types)  # searches error log for img file extensions if present they are broken.  Test fails and it gives img url's to be fixed.
             end)    
-    assert Enum.empty?(log),"The log was checked for img urls:\n The number of broken URL's is: #{Enum.count(log)}\n Img URL's that need to be fixed:\n #{log}\n screenshot has been saved to: \n #{take_screenshot()}"
+    assert Enum.empty?(log),"The error log was checked for img urls and unfortunately found some!:
+                            \n The number of broken URL's is: #{Enum.count(log)}
+                            \n Img URL's that need to be fixed:
+                            \n #{log}\n screenshot has been saved to: 
+                            \n #{take_screenshot()}" #empty log = img links working otherwise test fails and gives you list of all broken links to fix.
     end
 end  
