@@ -46,6 +46,12 @@ defmodule HomeworkTest do
     navigate_to ("https://the-internet.herokuapp.com/broken_images")
     Img_search.error_log_img_check  #Checks error log for img file extentions, if present the test will fail giving the Img url's found in the log which are not working. 
   end
+   
+   test "Basic Authorization" do
+    navigate_to("https://admin:admin@the-internet.herokuapp.com/basic_auth")
+    :timer.sleep(1000)
+    assert visible_text({:tag, "p"}) === "Congratulations! You must have the proper credentials."
+  end
 end
 
 
